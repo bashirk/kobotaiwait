@@ -1,0 +1,29 @@
+// prisma/schema.prisma
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DB_URL")
+  directUrl= env("DIRECT_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id           Int      @id @default(autoincrement())
+  email        String   @unique
+  referralCode String   @unique
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  referrals    User[]   @relation("UserReferrals")
+  referredBy   User?    @relation("UserReferrals", fields: [referredById], references: [id])
+  referredById Int?
+  referralLink String?  @unique
+}
+
+model IpAddress {
+  id      Int    @id @default(autoincrement())
+  address String @unique
+  count   Int    @default(0)
+}

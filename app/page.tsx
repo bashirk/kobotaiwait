@@ -1,6 +1,6 @@
 'use client'
 import { useState } from 'react';
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import Image from "next/image";
 import { Toaster, toast } from "react-hot-toast";
 import { InfoCircledIcon } from "@radix-ui/react-icons";
@@ -10,6 +10,8 @@ export default function Home() {
   const [email, setEmail] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const referralCode = searchParams.get('ref');
 
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setEmail(e.target.value);
@@ -21,24 +23,23 @@ export default function Home() {
 
     // join waitlist
     try {
-      const response = await fetch('/api/submit', {
+      const response = await fetch('/api/join-waitlist', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email }),
+        body: JSON.stringify({ email, referralCode }),
       });
       
-      // send to referrer page
-      if (response.ok) {
-        // setEmail("");
-        toast.success("Entering your referrer zone! 🚀");
-        const data = await response.json();
-        router.push(`/refer?code=${data.referralCode}`);
+      const data = await response.json();
+      
+      if (data.referralCode) {
+        toast.success("You're on the list! Check your referral link.");
+        router.push(`/referral?code=${data.referralCode}`);
       } else {
-        throw new Error('Error joining waitlist');
+        throw new Error(data.error || 'Error joining waitlist');
       }
     } catch (error) {
       console.error('Error:', error);
-      alert('An error occurred. Please try again.');
+      toast.error(error instanceof Error ? error.message : 'An unexpected error occurred');
     } finally {
       setIsLoading(false);
     }
@@ -46,9 +47,6 @@ export default function Home() {
 
   return (
     <>
-      <Head>
-        <title>Join Our Waitlist</title>
-      </Head>
       <Toaster />
 
       <section className="w-screen h-dvh grid grid-cols-1 md:grid-cols-2 gap-6">
