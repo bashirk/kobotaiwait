@@ -56,8 +56,8 @@ export async function POST(request: Request) {
     });
   } catch (error) {
     console.error('Error creating user:', error);
-    return new Response(JSON.stringify({ error: 'An error occurred while joining the waitlist' }), {
-      status: 500,
+    return new Response(JSON.stringify({ error: 'Email already exists in the waitlist' }), {
+      status: 400,
       headers: { 'Content-Type': 'application/json' },
     });
   }

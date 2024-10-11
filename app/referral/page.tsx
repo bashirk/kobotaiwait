@@ -55,7 +55,7 @@ export default function ReferralPage() {
 
   const shareOnTwitter = () => {
     const text = `Join me on the waitlist for this amazing product! ${referralLink}`;
-    window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`, '_blank');
+    window.open(`https://x.com/intent/post?text=${encodeURIComponent(text)}`, '_blank');
   };
 
   const shareOnFacebook = () => {
@@ -110,9 +110,8 @@ export default function ReferralPage() {
               </div>
               
               <div className="flex space-x-4 mb-6">
-                <SocialIcon url="https://facebook.com/share" onClick={shareOnFacebook} className="hover:scale-110 transition-transform duration-300" />
-                <SocialIcon url="https://twitter.com/intent/tweet" onClick={shareOnTwitter} className="hover:scale-110 transition-transform duration-300" />
-                <SocialIcon url="https://linkedin.com/sharing" onClick={shareOnLinkedIn} className="hover:scale-110 transition-transform duration-300" />
+                <SocialIcon url="https://x.com" onClick={shareOnTwitter} className="hover:scale-110 transition-transform duration-300" />
+                <SocialIcon url="https://linkedin.com" onClick={shareOnLinkedIn} className="hover:scale-110 transition-transform duration-300" />
               </div>
 
               <h5 className="text-xl font-semibold mb-4 text-[#000F2D]">FRIENDS JOINED</h5>
