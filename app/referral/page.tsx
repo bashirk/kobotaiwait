@@ -129,13 +129,21 @@ export default function ReferralPage() {
                   {rewardsInfo.map((reward, index) => (
                     <div
                       key={index}
-                      className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold ${
+                      className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold relative ${
                         referralCount >= reward.count
                           ? 'bg-[#000F2D] text-white'
                           : 'bg-gray-300 text-gray-600'
                       }`}
+                      onMouseEnter={() => setHoveredReward(reward)}
+                      onMouseLeave={() => setHoveredReward(null)}
                     >
                       {reward.count}
+                      {hoveredReward === reward && (
+                        <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 p-2 bg-white rounded shadow-lg z-10 w-32">
+                          <Image src={reward.image} alt={reward.reward} width={100} height={100} className="rounded mb-2" />
+                          <p className="text-xs font-semibold text-center text-[#000F2D]">{reward.reward}</p>
+                        </div>
+                      )}
                     </div>
                   ))}
                 </div>
