@@ -3,7 +3,8 @@ import { useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { toast, Toaster } from "react-hot-toast";
 import Image from 'next/image';
-import { ClipboardIcon, TwitterLogoIcon, InstagramLogoIcon } from "@radix-ui/react-icons";
+import { ClipboardIcon } from "@radix-ui/react-icons";
+import { SocialIcon } from 'react-social-icons';
 import mobileapp from '@/public/mobile-app.png'
 
 interface RewardItem {
@@ -61,85 +62,87 @@ export default function ReferralPage() {
     window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(referralLink)}`, '_blank');
   };
 
+  const shareOnLinkedIn = () => {
+    window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(referralLink)}`, '_blank');
+  };
+
   return (
     <>
       <Toaster />
-      <div className="min-h-screen bg-gray-100">
-        <div className="bg-[#000F2D] text-white py-2 text-center">
-          <h1 className="text-xl font-bold">THANK YOU FOR SIGNING UP</h1>
+      <div className="min-h-screen bg-gradient-to-br from-[#FCD0A1] to-[#B8E1FF]">
+        <div className="bg-[#000F2D] text-white py-3 text-center animate-fadeIn">
+          <h1 className="text-2xl font-bold">THANK YOU FOR SIGNING UP</h1>
         </div>
         <div className="container mx-auto px-4 py-8">
-          <div className="flex flex-col md:flex-row gap-8">
-            <div className="md:w-1/2 relative">
+          <div className="flex flex-col md:flex-row gap-8 animate-slideIn">
+            <div className="md:w-1/2 relative overflow-hidden rounded-lg shadow-2xl">
               <Image
                 src={mobileapp}
                 alt="App"
                 layout="responsive"
                 width={600}
                 height={400}
-                className="rounded-lg"
+                className="rounded-lg transform hover:scale-105 transition-transform duration-300"
               />
-              <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-white text-center">
-                <h2 className="text-4xl font-bold mb-2">SHAVING IS</h2>
-                <h2 className="text-4xl font-bold">EVOLVING</h2>
+              <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-white text-center bg-black bg-opacity-50 p-6 rounded-lg">
+                <h2 className="text-4xl font-bold mb-2 animate-pulse">SHAVING IS</h2>
+                <h2 className="text-4xl font-bold animate-pulse">EVOLVING</h2>
               </div>
             </div>
-            <div className="md:w-1/2">
-              <h3 className="text-2xl font-semibold mb-2">DON'T LEAVE YOUR FRIENDS BEHIND</h3>
-              <h4 className="text-3xl font-bold mb-4 text-[#000F2D]">INVITE FRIENDS & EARN PRODUCT</h4>
-              <p className="mb-4">Share your unique link via email, Facebook or Twitter and earn rewards for each friend who signs up.</p>
+            <div className="md:w-1/2 bg-white p-8 rounded-lg shadow-2xl">
+              <h3 className="text-2xl font-semibold mb-2 text-[#000F2D]">DON'T LEAVE YOUR FRIENDS BEHIND</h3>
+              <h4 className="text-3xl font-bold mb-4 text-[#FF6B6B] animate-bounce">INVITE FRIENDS & EARN PRODUCT</h4>
+              <p className="mb-4 text-gray-700">Share your unique link via email or social media and earn rewards for each friend who signs up.</p>
               
               <div className="flex mb-4">
                 <input
                   type="text"
                   value={referralLink}
                   readOnly
-                  className="flex-grow border-2 border-[#000F2D] rounded-l px-4 py-2 text-[#000F2D]"
+                  className="flex-grow border-2 border-[#000F2D] rounded-l px-4 py-2 text-[#000F2D] focus:outline-none focus:ring-2 focus:ring-[#4ECDC4]"
                 />
                 <button
                   onClick={copyToClipboard}
-                  className="bg-[#000F2D] hover:bg-[#001F5C] text-white font-bold py-2 px-4 rounded-r transition-colors"
+                  className="bg-[#000F2D] hover:bg-[#001F5C] text-white font-bold py-2 px-4 rounded-r transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-[#4ECDC4]"
                 >
                   <ClipboardIcon className="w-5 h-5" />
                 </button>
               </div>
               
               <div className="flex space-x-4 mb-6">
-                <button onClick={shareOnFacebook} className="bg-[#4267B2] hover:bg-[#365899] text-white font-bold p-2 rounded transition-colors">
-                  <InstagramLogoIcon className="w-6 h-6" />
-                </button>
-                <button onClick={shareOnTwitter} className="bg-[#1DA1F2] hover:bg-[#0C85D0] text-white font-bold p-2 rounded transition-colors">
-                  <TwitterLogoIcon className="w-6 h-6" />
-                </button>
+                <SocialIcon url="https://facebook.com/share" onClick={shareOnFacebook} className="hover:scale-110 transition-transform duration-300" />
+                <SocialIcon url="https://twitter.com/intent/tweet" onClick={shareOnTwitter} className="hover:scale-110 transition-transform duration-300" />
+                <SocialIcon url="https://linkedin.com/sharing" onClick={shareOnLinkedIn} className="hover:scale-110 transition-transform duration-300" />
               </div>
 
-              <h5 className="text-xl font-semibold mb-4">FRIENDS JOINED</h5>
+              <h5 className="text-xl font-semibold mb-4 text-[#000F2D]">FRIENDS JOINED</h5>
               <div className="relative pt-1 mb-6">
-                <div className="flex mb-2 h-2 overflow-hidden">
+                <div className="flex mb-2 h-4 overflow-hidden rounded-full bg-gray-200">
                   {rewardsInfo.map((reward, index) => (
                     <div
                       key={index}
-                      className={`flex-1 ${
-                        referralCount >= reward.count ? 'bg-[#000F2D]' : 'bg-gray-300'
-                      }`}
+                      style={{ width: `${(reward.count / rewardsInfo[rewardsInfo.length - 1].count) * 100}%` }}
+                      className={`${
+                        referralCount >= reward.count ? 'bg-[#4ECDC4]' : 'bg-gray-300'
+                      } transition-all duration-500 ease-in-out`}
                     />
                   ))}
                 </div>
-                <div className="flex justify-between">
+                <div className="flex justify-between mt-2">
                   {rewardsInfo.map((reward, index) => (
                     <div
                       key={index}
-                      className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold relative ${
+                      className={`w-12 h-12 rounded-full flex items-center justify-center text-sm font-bold relative ${
                         referralCount >= reward.count
-                          ? 'bg-[#000F2D] text-white'
+                          ? 'bg-[#4ECDC4] text-white'
                           : 'bg-gray-300 text-gray-600'
-                      }`}
+                      } transition-all duration-300 ease-in-out transform hover:scale-110`}
                       onMouseEnter={() => setHoveredReward(reward)}
                       onMouseLeave={() => setHoveredReward(null)}
                     >
                       {reward.count}
                       {hoveredReward === reward && (
-                        <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 p-2 bg-white rounded shadow-lg z-10 w-32">
+                        <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 p-2 bg-white rounded shadow-lg z-10 w-32 animate-fadeIn">
                           <Image src={reward.image} alt={reward.reward} width={100} height={100} className="rounded mb-2" />
                           <p className="text-xs font-semibold text-center text-[#000F2D]">{reward.reward}</p>
                         </div>
@@ -152,7 +155,7 @@ export default function ReferralPage() {
               <ul className="mb-6">
                 {rewardsInfo.map((reward, index) => (
                   <li key={index} className="mb-2 flex items-center">
-                    <span className={`mr-2 ${referralCount >= reward.count ? 'text-green-600' : 'text-gray-600'}`}>
+                    <span className={`mr-2 ${referralCount >= reward.count ? 'text-[#4ECDC4]' : 'text-gray-600'}`}>
                       {reward.count} referrals:
                     </span>
                     <span className="font-semibold">{reward.reward}</span>
@@ -160,7 +163,7 @@ export default function ReferralPage() {
                 ))}
               </ul>
 
-              <p className="text-center text-sm font-semibold">{referralCount} friends have joined</p>
+              <p className="text-center text-lg font-semibold text-[#FF6B6B] animate-pulse">{referralCount} friends have joined</p>
               <p className="text-center text-sm text-gray-500">Keep checking</p>
             </div>
           </div>
