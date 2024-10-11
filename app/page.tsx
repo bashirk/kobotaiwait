@@ -1,5 +1,5 @@
 'use client'
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation'
 import Image from "next/image";
 import { Toaster, toast } from "react-hot-toast";
@@ -8,20 +8,36 @@ import Head from 'next/head';
 
 export default function Home() {
   const [email, setEmail] = useState('');
+  const [referralCode, setReferralCode] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
   const searchParams = useSearchParams();
-  const referralCode = searchParams.get('ref');
+
+  useEffect(() => {
+    const code = searchParams.get('ref');
+    if (code) {
+      setReferralCode(code);
+    }
+  }, [searchParams]);
 
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setEmail(e.target.value);
+  };
+
+  const handleReferralCodeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setReferralCode(e.target.value);
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsLoading(true);
 
-    // join waitlist
+    if (!referralCode) {
+      toast.error('Referral code is required');
+      setIsLoading(false);
+      return;
+    }
+
     try {
       const response = await fetch('/api/join-waitlist', {
         method: 'POST',
@@ -31,8 +47,8 @@ export default function Home() {
       
       const data = await response.json();
       
-      if (data.referralCode) {
-        toast.success("You're on the list! Check your referral link.");
+      if (response.ok && data.referralCode) {
+        toast.success("Success! Here's your own referral link.");
         router.push(`/referral?code=${data.referralCode}`);
       } else {
         throw new Error(data.error || 'Error joining waitlist');
@@ -68,10 +84,7 @@ export default function Home() {
           </p>
 
           <form onSubmit={handleSubmit} method="POST" className="mt-2 max-w-sm">
-            <div className="flex flex-col gap-2 lg:flex-row">
-              <label className="sr-only" htmlFor="email-address">
-                Email address
-              </label>
+            <div className="flex flex-col gap-2">
               <input
                 autoComplete="email"
                 className="text-accent-500 block h-10 w-full focus:invalid:border-red-400 focus:invalid:text-red-500 focus:invalid:ring-red-500 appearance-none rounded-lg border-2 border-slate-300 px-4 py-2 placeholder-zinc-400 duration-200 focus:outline-none focus:ring-zinc-300 sm:text-sm"
@@ -84,6 +97,17 @@ export default function Home() {
                 value={email}
                 onChange={handleEmailChange}
                 aria-label="Enter your email address"
+              />
+              <input
+                className="text-accent-500 block h-10 w-full appearance-none rounded-lg border-2 border-slate-300 px-4 py-2 placeholder-zinc-400 duration-200 focus:outline-none focus:ring-zinc-300 sm:text-sm"
+                id="referral-code"
+                name="referralCode"
+                placeholder="Enter referral code"
+                required
+                type="text"
+                value={referralCode}
+                onChange={handleReferralCodeChange}
+                aria-label="Enter referral code"
               />
               <button
                 className={`flex h-10 shrink-0 items-center justify-center gap-1 rounded-lg bg-[#000F2D] px-4 py-2 text-sm font-semibold text-white transition-all hover:bg-zinc-700 ${

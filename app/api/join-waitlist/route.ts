@@ -8,6 +8,13 @@ export async function POST(request: Request) {
     const { email, referralCode } = await request.json();
     const ip = request.headers.get('x-forwarded-for') || 'unknown';
 
+    if (!referralCode) {
+      return new Response(JSON.stringify({ error: 'Referral code is required' }), {
+        status: 400,
+        headers: { 'Content-Type': 'application/json' },
+      });
+    }
+
     // Check for IP abuse
     const ipAddress = await prisma.ipAddress.upsert({
       where: { address: ip },
@@ -19,34 +26,29 @@ export async function POST(request: Request) {
       return new Response(JSON.stringify({ error: 'Too many sign-ups from this IP address' }), { status: 403 });
     }
 
+    // Verify referral code
+    const referrer = await prisma.user.findUnique({ 
+      where: { referralCode },
+      select: { id: true }
+    });
+    
+    if (!referrer) {
+      return new Response(JSON.stringify({ error: 'Invalid referral code' }), {
+        status: 400,
+        headers: { 'Content-Type': 'application/json' },
+      });
+    }
+
     // Create user
     const newReferralCode = generateReferralCode();
     const referralLink = `${process.env.NEXT_PUBLIC_BASE_URL}?ref=${newReferralCode}`;
-
-    let referrerData = undefined;
-
-    if (referralCode) {
-      const referrer = await prisma.user.findUnique({ 
-        where: { referralCode },
-        select: { id: true }
-      });
-      
-      if (referrer) {
-        referrerData = { connect: { id: referrer.id } };
-      } else {
-        // Handle invalid referral code
-        console.warn(`Invalid referral code used: ${referralCode}`);
-        // Optionally, you could throw an error here if you want to prevent sign-up with invalid codes
-        // throw new Error('Invalid referral code');
-      }
-    }
 
     const newUser = await prisma.user.create({
       data: {
         email,
         referralCode: newReferralCode,
         referralLink,
-        referredBy: referrerData,
+        referredBy: { connect: { id: referrer.id } },
       },
     });
 
