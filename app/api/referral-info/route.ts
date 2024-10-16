@@ -4,6 +4,54 @@ const prisma = new PrismaClient();
 
 export async function GET(request: Request) {
     try {
+        const rewardsInfo = [
+            {
+                count: 2,
+                reward: '1 Month of Kobot Standard',
+                features: [
+                    'Access to standard features',
+                    'Priority customer support',
+                    'Monthly usage reports'
+                ],
+            },
+            {
+                count: 5,
+                reward: '1 Week of Kobot Pro',
+                features: [
+                    'All standard features',
+                    'Advanced analytics',
+                    'Extended data retention'
+                ],
+            },
+            {
+                count: 25,
+                reward: '2 Weeks of Kobot Pro',
+                features: [
+                    'All Pro features',
+                    'Customizable dashboard',
+                    'Premium support'
+                ],
+            },
+            {
+                count: 50,
+                reward: '1 Week of Kobot ULTIMATE',
+                features: [
+                    'All Pro features',
+                    'Dedicated account manager',
+                    'Advanced data integrations'
+                ],
+            },
+            {
+                count: 100,
+                reward: '1 Full Month of Kobot ULTIMATE',
+                features: [
+                    'All ULTIMATE features',
+                    '24/7 customer support',
+                    'Free feature upgrades'
+                ],
+            },
+        ];
+        
         const url = new URL(request.url);
         const code = url.searchParams.get('code');
 
@@ -34,14 +82,6 @@ export async function GET(request: Request) {
         });
 
         const referredByEmail = user.referredBy ? user.referredBy.email : null;
-
-        const rewardsInfo = [
-            { count: 2, reward: '1 Month of Kobot Standard', image: "/shave-cream.jpg" },
-            { count: 5, reward: '1 Week of Kobot Pro', image: "/truman-handle.jpg" },
-            { count: 25, reward: '2 Weeks of Kobot Pro', image: "/winston-set.jpg" },
-            { count: 50, reward: '1 Week of Kobot ULTIMATE', image: "/free-blades.jpg" },
-            { count: 100, reward: '1 Full Month of Kobot ULTIMATE', image: "/free-blades.jpg" },
-        ];
 
         return new Response(JSON.stringify({ referralCount, referredByEmail, rewardsInfo, referralLink: user.referralLink }), {
             status: 200,

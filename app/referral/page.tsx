@@ -10,7 +10,8 @@ import mobileapp from '@/public/mobile-app.png'
 interface RewardItem {
   count: number;
   reward: string;
-  image: string;
+  feature: string;
+  features: string;
 }
 
 export default function ReferralPage() {
@@ -119,26 +120,31 @@ export default function ReferralPage() {
               <h5 className="text-2xl font-semibold mb-6 text-[#000F2D]">{referralCount} FRIENDS JOINED</h5>
               <div className="relative pt-1 mb-6">
                 <div className="flex justify-between mt-2">
-                  {rewardsInfo.map((reward, index) => (
-                    <div
-                      key={index}
-                      className={`w-12 h-12 rounded-full flex items-center justify-center text-sm font-bold relative ${
-                        referralCount >= reward.count
-                          ? 'bg-[#4ECDC4] text-white'
-                          : 'bg-gray-300 text-gray-600'
-                      } transition-all duration-300 ease-in-out transform hover:scale-110`}
-                      onMouseEnter={() => setHoveredReward(reward)}
-                      onMouseLeave={() => setHoveredReward(null)}
-                    >
-                      {reward.count}
-                      {hoveredReward === reward && (
-                        <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 p-2 bg-white rounded shadow-lg z-10 w-32 animate-fadeIn">
-                          <Image src={reward.image} alt={reward.reward} width={100} height={100} className="rounded mb-2" />
-                          <p className="text-xs font-semibold text-center text-[#000F2D]">{reward.reward}</p>
-                        </div>
-                      )}
-                    </div>
-                  ))}
+                {rewardsInfo.map((reward, index) => (
+    <div
+        key={index}
+        className={`w-12 h-12 rounded-full flex items-center justify-center text-sm font-bold relative ${
+            referralCount >= reward.count
+                ? 'bg-[#4ECDC4] text-white'
+                : 'bg-gray-300 text-gray-600'
+        } transition-all duration-300 ease-in-out transform hover:scale-110`}
+        onMouseEnter={() => setHoveredReward(reward)}
+        onMouseLeave={() => setHoveredReward(null)}
+    >
+        {reward.count}
+        {hoveredReward === reward && (
+            <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 p-2 bg-white rounded shadow-lg z-10 w-48 animate-fadeIn">
+                <h6 className="font-semibold text-center text-[#000F2D] mb-2">{reward.reward}</h6>
+                <ul className="list-disc list-inside text-sm text-gray-700">
+                    {reward.features.map((feature, featureIndex) => (
+                        <li key={featureIndex}>{feature}</li>
+                    ))}
+                </ul>
+            </div>
+        )}
+    </div>
+))}
+
                 </div>
               </div>
               
