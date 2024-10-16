@@ -3,10 +3,30 @@ import { generateReferralCode } from '../../utils/referral';
 
 const prisma = new PrismaClient();
 
+// Function to get the client IP address
+function getClientIP(request: Request): string {
+  const forwardedFor = request.headers.get('x-forwarded-for');
+  if (forwardedFor) {
+    return forwardedFor.split(',')[0].trim();
+  }
+  
+  const realIP = request.headers.get('x-real-ip');
+  if (realIP) {
+    return realIP;
+  }
+  
+  const cfIP = request.headers.get('cf-connecting-ip');
+  if (cfIP) {
+    return cfIP;
+  }
+  
+  return 'unknown';
+}
+
 export async function POST(request: Request) {
   try {
     const { email, referralCode } = await request.json();
-    const ip = request.headers.get('x-forwarded-for') || 'unknown';
+    const ip = getClientIP(request);
 
     if (!referralCode) {
       return new Response(JSON.stringify({ error: 'Referral code is required' }), {
