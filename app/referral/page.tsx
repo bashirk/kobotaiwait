@@ -118,17 +118,6 @@ export default function ReferralPage() {
 
               <h5 className="text-2xl font-semibold mb-6 text-[#000F2D]">{referralCount} FRIENDS JOINED</h5>
               <div className="relative pt-1 mb-6">
-                <div className="flex mb-2 h-4 overflow-hidden rounded-full bg-gray-200">
-                  {rewardsInfo.map((reward, index) => (
-                    <div
-                      key={index}
-                      style={{ width: `${(reward.count / rewardsInfo[rewardsInfo.length - 1].count) * 100}%` }}
-                      className={`${
-                        referralCount >= reward.count ? 'bg-[#4ECDC4]' : 'bg-gray-300'
-                      } transition-all duration-500 ease-in-out`}
-                    />
-                  ))}
-                </div>
                 <div className="flex justify-between mt-2">
                   {rewardsInfo.map((reward, index) => (
                     <div
