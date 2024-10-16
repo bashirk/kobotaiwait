@@ -93,8 +93,8 @@ export default function ReferralPage() {
             </div>
             <div className="md:w-3/5 bg-white p-10 rounded-lg shadow-2xl">
               <h3 className="text-xl font-semibold mb-2 text-[#000F2D]">DON'T LEAVE YOUR FRIENDS BEHIND</h3>
-              <h4 className="text-4xl font-bold mb-6 text-[#FF6B6B] animate-bounce">INVITE FRIENDS & EARN PRODUCT</h4>
-              <p className="mb-6 text-gray-700 text-lg">Share your unique link via email or social media and earn rewards for each friend who signs up.</p>
+              <h4 className="text-4xl font-bold mb-6 text-green-600 animate-pulse">INVITE FRIENDS & EARN PRODUCT</h4>
+              <p className="mb-6 text-gray-700 text-lg">Share your unique link via email or social media and earn exclusive rewards for each friend who signs up.</p>
               
               <div className="flex mb-6">
                 <input
@@ -153,6 +153,7 @@ export default function ReferralPage() {
                 </div>
               </div>
               
+              {/* referral counts */}
               <ul className="mb-8 space-y-3">
                 {rewardsInfo.map((reward, index) => (
                   <li key={index} className="flex items-center">
@@ -164,12 +165,19 @@ export default function ReferralPage() {
                 ))}
               </ul>
 
-              {referralCount > 4 && (
+              {/* referral rewards */}
+              {referralCount > 1 && (
                 <p className="text-center text-2xl font-bold text-[#FF6B6B] animate-pulse mb-2">
-                  You have earned {rewardsInfo.find(r => r.count <= referralCount)?.reward || 'rewards'}
-                </p>
+                You have earned {rewardsInfo
+                  .filter(r => r.count <= referralCount)
+                  .reduce((nearest, current) => 
+                    current.count > nearest.count ? current : nearest, 
+                    { count: 0, reward: 'rewards' }
+                  ).reward}!
+              </p>
               )}
-              <p className="text-center text-lg text-gray-500">Keep inviting!</p>
+
+              <p className="text-center text-lg text-gray-500">Keep inviting</p>
             </div>
           </div>
         </div>
