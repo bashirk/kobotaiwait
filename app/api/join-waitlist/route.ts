@@ -1,7 +1,5 @@
-import { PrismaClient } from '@prisma/client';
 import { generateReferralCode } from '../../utils/referral';
-
-const prisma = new PrismaClient();
+import { prisma } from '../../utils/prisma';
 
 // Function to get the client IP address
 function getClientIP(request: Request): string {
