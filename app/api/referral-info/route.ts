@@ -11,7 +11,7 @@ export async function GET(request: Request) {
                 features: [
                     'Access to standard features',
                     'Priority customer support',
-                    'Monthly usage reports'
+                    'Monthly usage reports',
                 ],
             },
             {
@@ -20,7 +20,7 @@ export async function GET(request: Request) {
                 features: [
                     'All standard features',
                     'Advanced analytics',
-                    'Extended data retention'
+                    'Extended data retention',
                 ],
             },
             {
@@ -29,7 +29,7 @@ export async function GET(request: Request) {
                 features: [
                     'All Pro features',
                     'Customizable dashboard',
-                    'Premium support'
+                    'Premium support',
                 ],
             },
             {
@@ -38,7 +38,7 @@ export async function GET(request: Request) {
                 features: [
                     'All Pro features',
                     'Dedicated account manager',
-                    'Advanced data integrations'
+                    'Advanced data integrations',
                 ],
             },
             {
@@ -47,11 +47,11 @@ export async function GET(request: Request) {
                 features: [
                     'All ULTIMATE features',
                     '24/7 customer support',
-                    'Free feature upgrades'
+                    'Free feature upgrades',
                 ],
             },
         ];
-        
+
         const url = new URL(request.url);
         const code = url.searchParams.get('code');
 
@@ -64,9 +64,9 @@ export async function GET(request: Request) {
 
         const user = await prisma.user.findUnique({
             where: { referralCode: code },
-            include: { 
+            include: {
                 referrals: true,
-                referredBy: true, // Include information about the referrer
+                referredBy: true,
             },
         });
 
@@ -83,15 +83,21 @@ export async function GET(request: Request) {
 
         const referredByEmail = user.referredBy ? user.referredBy.email : null;
 
-        return new Response(JSON.stringify({ referralCount, referredByEmail, rewardsInfo, referralLink: user.referralLink }), {
-            status: 200,
-            headers: { 'Content-Type': 'application/json' },
-        });
+        return new Response(
+            JSON.stringify({ referralCount, referredByEmail, rewardsInfo, referralLink: user.referralLink }),
+            {
+                status: 200,
+                headers: { 'Content-Type': 'application/json' },
+            }
+        );
     } catch (error) {
         console.error('Error fetching referral info:', error);
-        return new Response(JSON.stringify({ error: 'An error occurred while fetching referral information' }), {
-            status: 500,
-            headers: { 'Content-Type': 'application/json' },
-        });
+        return new Response(
+            JSON.stringify({ error: 'An error occurred while fetching referral information' }),
+            {
+                status: 500,
+                headers: { 'Content-Type': 'application/json' },
+            }
+        );
     }
 }

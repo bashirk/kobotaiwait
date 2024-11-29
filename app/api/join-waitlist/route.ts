@@ -4,7 +4,12 @@ import { generateReferralCode } from '../../utils/referral';
 const prisma = new PrismaClient();
 
 // Function to get the client IP address
-function getClientIP(request: Request): string {  
+function getClientIP(request: Request): string {
+  const forwardedFor = request.headers.get('x-forwarded-for');
+  if (forwardedFor && forwardedFor !== '::1') {
+    return forwardedFor.split(',')[0].trim();
+  }
+  
   const realIP = request.headers.get('x-real-ip');
   if (realIP) {
     return realIP;
@@ -15,7 +20,7 @@ function getClientIP(request: Request): string {
     return cfIP;
   }
   
-  return 'unknown';
+  return 'localhost';
 }
 
 export async function POST(request: Request) {
