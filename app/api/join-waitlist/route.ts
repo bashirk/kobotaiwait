@@ -4,12 +4,7 @@ import { generateReferralCode } from '../../utils/referral';
 const prisma = new PrismaClient();
 
 // Function to get the client IP address
-function getClientIP(request: Request): string {
-  const forwardedFor = request.headers.get('x-forwarded-for');
-  if (forwardedFor) {
-    return forwardedFor.split(',')[0].trim();
-  }
-  
+function getClientIP(request: Request): string {  
   const realIP = request.headers.get('x-real-ip');
   if (realIP) {
     return realIP;
